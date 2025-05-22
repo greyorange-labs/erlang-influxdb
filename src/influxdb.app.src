@@ -2,12 +2,7 @@
     {description, "InfluxDB client library"},
     {vsn, "0.2.1"},
     {modules, []},
-    {applications, [
-        kernel,
-        stdlib,
-        inets,
-        jsone
-    ]},
+    {applications, [kernel, stdlib, inets, jsone, hackney]},
     {mod, {influxdb_app, []}},
     {registered, [influxdb_sup]},
     {env, []}

@@ -8,20 +8,12 @@
 -behaviour(gen_statem).
 
 %% API
--export([
-    start_link/1
-]).
-
+-export([start_link/1]).
 %% gen_server callbacks
--export([init/1, callback_mode/0,
-         terminate/3]).
-
+-export([init/1, callback_mode/0, terminate/3]).
 -export([ready/3]).
 
--record(state, {
-    batch_proc_fun = undefined,
-    flush_threshold
-}).
+-record(state, {batch_proc_fun = undefined, flush_threshold}).
 
 %%%===================================================================
 %%% API
@@ -48,7 +40,7 @@ init(Args) ->
     {ok, ready, #state{batch_proc_fun = BatchProcessFun, flush_threshold = FlushThreshold}}.
 
 ready(info, Data, State) ->
-    ProcFun = State#state.batch_proc_fun, 
+    ProcFun = State#state.batch_proc_fun,
     %% Use erlang:monotonic_time() to avoid time warps
     StartTime = erlang:monotonic_time(millisecond),
     NewData = receive_and_merge([Data], StartTime, State),
@@ -66,8 +58,10 @@ drop_mq() ->
 flush_if_necessary(T) ->
     {_, L} = process_info(self(), message_queue_len),
     case L > T of
-        true -> drop_mq();
-        false -> ok
+        true ->
+            drop_mq();
+        false ->
+            ok
     end.
 
 receive_and_merge(AccData, _StartTime, State) when length(AccData) >= 500 ->
@@ -83,9 +77,8 @@ receive_and_merge(AccData, StartTime, State) ->
             receive
                 Data ->
                     receive_and_merge([Data | AccData], StartTime, State)
-            after
-                TimeLeft ->
-                    AccData
+            after TimeLeft ->
+                AccData
             end
     end.
 
