@@ -58,8 +58,9 @@ query(
     is_map(Parameters), is_map(Options)
 ->
     Timeout = maps:get(timeout, Options, infinity),
+    Scheme = maps:get(scheme, Config, "http"),
     Url = influxdb_uri:encode(#{
-        scheme => "http",
+        scheme => Scheme,
         host => Host,
         port => Port,
         path => "/query",
@@ -159,13 +160,14 @@ write(
         username := Username,
         password := Password,
         database := Database
-    },
+    } = Config,
     Measurements,
     Options
 ) ->
     Timeout = maps:get(timeout, Options, infinity),
+    Scheme = maps:get(scheme, Config, "http"),
     Url = influxdb_uri:encode(#{
-        scheme => "http",
+        scheme => Scheme,
         host => Host,
         port => Port,
         path => "/write",
@@ -217,8 +219,9 @@ get_batch_processing_fun() ->
         } =
             Config,
         Timeout = maps:get(timeout, Options, infinity),
+        Scheme = maps:get(scheme, Config, "http"),
         Url = influxdb_uri:encode(#{
-            scheme => "http",
+            scheme => Scheme,
             host => Host,
             port => Port,
             path => "/write",

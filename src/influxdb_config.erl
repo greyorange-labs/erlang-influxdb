@@ -10,7 +10,8 @@
         port := inet:port_number(),
         username := string(),
         password := string(),
-        database => string()
+        database => string(),
+        scheme => string() | undefined
     }.
 
 -spec new(Opts) -> config() when
@@ -20,7 +21,8 @@
             port => inet:port_number(),
             username => iodata(),
             password => iodata(),
-            database => iodata()
+            database => iodata(),
+            scheme => iodata() | undefined
         }.
 new(Opts) ->
     maps:map(
@@ -34,14 +36,19 @@ new(Opts) ->
             (password, Password) ->
                 unicode:characters_to_list(Password);
             (database, Database) ->
-                unicode:characters_to_list(Database)
+                unicode:characters_to_list(Database);
+            (scheme, Scheme) when is_list(Scheme) ->
+                unicode:characters_to_list(Scheme);
+            (scheme, undefined) ->
+                "http"
         end,
         maps:merge(
             #{
                 host => "localhost",
                 port => 8086,
                 username => "root",
-                password => "root"
+                password => "root",
+                scheme => "http"
             },
             Opts
         )
