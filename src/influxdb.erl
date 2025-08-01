@@ -59,11 +59,12 @@ query(
 ->
     Timeout = maps:get(timeout, Options, infinity),
     Scheme = maps:get(scheme, Config, "http"),
+    SubPath = maps:get(sub_path, Config, ""),
     Url = influxdb_uri:encode(#{
         scheme => Scheme,
         host => Host,
         port => Port,
-        path => "/query",
+        path => SubPath ++ "/query",
         query => maps:merge(
             url_query(Config, Options),
             #{"q" => Query}
@@ -166,11 +167,12 @@ write(
 ) ->
     Timeout = maps:get(timeout, Options, infinity),
     Scheme = maps:get(scheme, Config, "http"),
+    SubPath = maps:get(sub_path, Config, ""),
     Url = influxdb_uri:encode(#{
         scheme => Scheme,
         host => Host,
         port => Port,
-        path => "/write",
+        path => SubPath ++ "/write",
         query =>
             maps:fold(
                 fun
@@ -220,11 +222,12 @@ get_batch_processing_fun() ->
             Config,
         Timeout = maps:get(timeout, Options, infinity),
         Scheme = maps:get(scheme, Config, "http"),
+        SubPath = maps:get(sub_path, Config, ""),
         Url = influxdb_uri:encode(#{
             scheme => Scheme,
             host => Host,
             port => Port,
-            path => "/write",
+            path => SubPath ++ "/write",
             query =>
                 maps:fold(
                     fun

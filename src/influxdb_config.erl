@@ -6,23 +6,25 @@
 
 -type config() ::
     #{
+        scheme => string() | undefined,
         host := string(),
         port := inet:port_number(),
+        sub_path => string() | undefined,
         username := string(),
         password := string(),
-        database => string(),
-        scheme => string() | undefined
+        database => string()
     }.
 
 -spec new(Opts) -> config() when
     Opts ::
         #{
+            scheme => iodata() | undefined,
             host => iodata(),
             port => inet:port_number(),
+            sub_path => iodata() | undefined,
             username => iodata(),
             password => iodata(),
-            database => iodata(),
-            scheme => iodata() | undefined
+            database => iodata()
         }.
 new(Opts) ->
     maps:map(
@@ -40,15 +42,20 @@ new(Opts) ->
             (scheme, Scheme) when is_list(Scheme) ->
                 unicode:characters_to_list(Scheme);
             (scheme, undefined) ->
-                "http"
+                "http";
+            (sub_path, SubPath) when is_list(SubPath) ->
+                unicode:characters_to_list(SubPath);
+            (sub_path, undefined) ->
+                ""
         end,
         maps:merge(
             #{
+                scheme => "http",
                 host => "localhost",
                 port => 8086,
+                sub_path => "",
                 username => "root",
-                password => "root",
-                scheme => "http"
+                password => "root"
             },
             Opts
         )
